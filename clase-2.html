@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formación de Emprendedores 2026 — Clase 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* =====================================================
+   DESIGN TOKENS — Colores de marca UTN Emprende
+   ===================================================== */
+:root {
+  --teal:       #00D4B4;
+  --teal-dark:  #00A88E;
+  --blue:       #3D8BFF;
+  --blue-dark:  #1A5FD4;
+  --bracket:    #1DC99A;
+  --purple:     #6B5FFF;
+
+  --dark:       #07111F;
+  --dark-2:     #0D1E33;
+  --dark-3:     #132840;
+  --white:      #FFFFFF;
+  --white-80:   rgba(255,255,255,0.88);
+  --white-60:   rgba(255,255,255,0.82);
+  --white-30:   rgba(255,255,255,0.55);
+  --white-10:   rgba(255,255,255,0.08);
+
+  --grad-cover:  linear-gradient(135deg, #00D4B4 0%, #3D8BFF 55%, #6B5FFF 100%);
+  --grad-accent: linear-gradient(135deg, var(--teal), var(--blue));
+
+  --font-display: 'Outfit', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  --size-xl:    clamp(3rem, 9vw, 7rem);
+  --size-hero:  clamp(2rem, 6vw, 4.5rem);
+  --size-title: clamp(1.6rem, 4vw, 3rem);
+  --size-body:  clamp(1rem, 1.9vw, 1.3rem);
+  --size-small: clamp(0.85rem, 1.4vw, 1.05rem);
+  --size-mono:  clamp(0.8rem, 1.2vw, 0.95rem);
+
+  --pad:    clamp(1.5rem, 5vw, 5rem);
+  --gap:    clamp(0.8rem, 2vw, 1.8rem);
+  --gap-sm: clamp(0.4rem, 1vw, 0.9rem);
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur:       0.65s;
+}
+
+/* =====================================================
+   RESET + BASE
+   ===================================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  height: 100%;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-display);
+  background: var(--dark);
+  color: var(--white);
+  height: 100%;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* =====================================================
+   CUSTOM CURSOR
+   ===================================================== */
+.cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--teal);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: width 0.2s, height 0.2s, background 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 38px; height: 38px;
+  border: 1.5px solid rgba(0, 212, 180, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--ease-expo), height 0.3s var(--ease-expo), border-color 0.3s;
+}
+
+body:has(a:hover) .cursor,
+body:has(button:hover) .cursor { width: 16px; height: 16px; background: var(--bracket); }
+body:has(a:hover) .cursor-ring,
+body:has(button:hover) .cursor-ring { width: 54px; height: 54px; border-color: rgba(29,201,154,0.5); }
+
+/* =====================================================
+   PROGRESS BAR
+   ===================================================== */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: var(--grad-accent);
+  z-index: 1000;
+  width: 0%;
+  transition: width 0.4s var(--ease-expo);
+  box-shadow: 0 0 12px rgba(0, 212, 180, 0.5);
+}
+
+/* =====================================================
+   NAV DOTS
+   ===================================================== */
+.nav-dots {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  z-index: 100;
+}
+
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--white-30);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-expo);
+}
+
+.dot.active {
+  background: var(--teal);
+  height: 22px;
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0,212,180,0.5);
+}
+
+.dot:hover:not(.active) { background: var(--white-60); }
+
+/* =====================================================
+   KEYBOARD HINT
+   ===================================================== */
+.keyboard-hint {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--white-30);
+  letter-spacing: 0.1em;
+  z-index: 100;
+  transition: opacity 0.5s;
+}
+
+.key {
+  background: var(--white-10);
+  border: 1px solid var(--white-30);
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+}
+
+/* =====================================================
+   SLIDE BASE
+   ===================================================== */
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  padding: var(--pad);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Entrance animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity var(--dur) var(--ease-expo),
+              transform var(--dur) var(--ease-expo);
+}
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.15s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.25s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.35s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.45s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.55s; }
+.slide.visible .reveal:nth-child(7) { transition-delay: 0.65s; }
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity var(--dur) var(--ease-expo),
+              transform var(--dur) var(--ease-expo);
+}
+.slide.visible .reveal-left { opacity: 1; transform: translateX(0); }
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.88);
+  transition: opacity var(--dur) var(--ease-expo),
+              transform var(--dur) var(--ease-expo);
+}
+.slide.visible .reveal-scale { opacity: 1; transform: scale(1); }
+
+/* =====================================================
+   SHARED COMPONENTS
+   ===================================================== */
+.slide-logo {
+  position: absolute;
+  bottom: 1.4rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.slide-logo-img {
+  height: clamp(30px, 3.8vw, 46px);
+  width: auto;
+  opacity: 0.72;
+  filter: brightness(0) invert(1);
+}
+
+.divider {
+  width: clamp(40px, 6vw, 70px);
+  height: 3px;
+  background: var(--grad-accent);
+  border-radius: 2px;
+  margin: var(--gap-sm) 0 var(--gap);
+}
+
+.bracket-wrap {
+  color: var(--bracket);
+  font-weight: 900;
+  font-size: inherit;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: var(--size-mono);
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: var(--gap);
+}
+
+.section-label::before {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 1.5px;
+  background: var(--teal);
+}
+
+.checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: var(--size-body);
+  font-weight: 600;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.88);
+}
+
+.checklist li::before {
+  content: '✓';
+  color: var(--bracket);
+  font-weight: 900;
+  font-size: 1.1em;
+  flex-shrink: 0;
+  margin-top: 0.05em;
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-expo), box-shadow 0.2s, opacity 0.2s;
+  user-select: none;
+}
+
+.btn:active { transform: scale(0.96) !important; }
+
+.btn-primary {
+  background: var(--grad-cover);
+  color: var(--white);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  padding: 0.75em 2.2em;
+  box-shadow: 0 6px 30px rgba(0,212,180,0.28);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,212,180,0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--white-60);
+  font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+  padding: 0.7em 2em;
+  border: 1.5px solid rgba(255,255,255,0.25);
+}
+
+.btn-secondary:hover {
+  border-color: rgba(0,212,180,0.5);
+  color: var(--teal);
+  transform: translateY(-2px);
+}
+
+.btn-time {
+  background: var(--white-10);
+  color: var(--white-60);
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  font-weight: 700;
+  padding: 0.55em 1.5em;
+  border-radius: 100px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-expo);
+}
+
+.btn-time:hover {
+  border-color: rgba(0,212,180,0.4);
+  color: var(--teal);
+}
+
+.btn-time.active {
+  background: rgba(0,212,180,0.12);
+  border-color: var(--teal);
+  color: var(--teal);
+  box-shadow: 0 0 12px rgba(0,212,180,0.2);
+}
+
+/* =====================================================
+   SLIDE 1 — PORTADA / ICE BREAKER
+   ===================================================== */
+.slide--portada {
+  background: var(--grad-cover);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.portada-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.portada-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+.portada-year {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: var(--size-mono);
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.3em;
+}
+
+.portada-logo {
+  position: absolute;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.portada-logo-img {
+  display: block;
+  height: clamp(48px, 7vw, 80px);
+  width: auto;
+  margin: 0 auto 0.5rem;
+  filter: brightness(0) invert(1) drop-shadow(0 4px 20px rgba(0,0,0,0.2));
+  animation: logoFloat 4s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.logo-sub {
+  font-weight: 500;
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+  letter-spacing: 0.32em;
+  color: rgba(255,255,255,0.72);
+  text-transform: uppercase;
+}
+
+.portada-hola {
+  font-size: clamp(5rem, 18vw, 13rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 8px 60px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 2;
+}
+
+.portada-sub {
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.05em;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  position: relative;
+  z-index: 2;
+}
+
+.portada-cta {
+  position: relative;
+  z-index: 2;
+}
+
+/* =====================================================
+   SLIDE 2 — TIMER ICE BREAKER
+   ===================================================== */
+.slide--timer {
+  background: var(--dark);
+  align-items: center;
+  text-align: center;
+}
+
+.timer-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(29,201,154,0.06) 0%, transparent 65%);
+}
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: clamp(4rem, 18vw, 12rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: var(--grad-cover);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  user-select: none;
+  transition: filter 0.3s;
+}
+
+.timer-display.running {
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { filter: none; }
+  50% { filter: drop-shadow(0 0 20px rgba(0,212,180,0.6)); }
+}
+
+.timer-display.done {
+  -webkit-text-fill-color: #FF4D4D;
+  filter: drop-shadow(0 0 30px rgba(255,77,77,0.5));
+  animation: timerDone 0.5s ease infinite alternate;
+}
+
+@keyframes timerDone {
+  from { transform: scale(1); }
+  to   { transform: scale(1.03); }
+}
+
+.timer-instruction {
+  font-size: var(--size-title);
+  font-weight: 800;
+  line-height: 1.15;
+  max-width: 22ch;
+  margin: 0 auto;
+  margin-bottom: var(--gap);
+}
+
+.timer-options {
+  display: flex;
+  gap: var(--gap-sm);
+  justify-content: center;
+  margin-bottom: var(--gap);
+  flex-wrap: wrap;
+}
+
+.timer-actions {
+  display: flex;
+  gap: var(--gap-sm);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--gap);
+  flex-wrap: wrap;
+}
+
+/* =====================================================
+   SLIDE 3 — BMC INTRO
+   ===================================================== */
+.slide--bmc-intro {
+  background: var(--dark-2);
+}
+
+.bmc-intro-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 85% 20%, rgba(0,212,180,0.09) 0%, transparent 50%),
+    radial-gradient(ellipse at 5% 85%, rgba(107,95,255,0.08) 0%, transparent 50%);
+}
+
+/* =====================================================
+   SLIDE 4 — LOS 9 BLOQUES (BMC GRID)
+   ===================================================== */
+.slide--bmc-grid {
+  background: var(--dark);
+  justify-content: center;
+  align-items: center;
+  padding: clamp(0.6rem, 1.5vw, 1.5rem) clamp(0.8rem, 2vw, 2rem);
+}
+
+.bmc-grid-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.3rem, 0.8vh, 0.7rem);
+}
+
+.bmc-grid-label {
+  font-family: var(--font-mono);
+  font-size: clamp(0.6rem, 1vw, 0.8rem);
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.bmc-canvas {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: 1fr 1fr 0.6fr;
+  gap: clamp(4px, 0.5vw, 8px);
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.bmc-block {
+  background: var(--white-10);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: clamp(8px, 1vw, 14px);
+  padding: clamp(0.6rem, 1.3vw, 1.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.2rem, 0.5vh, 0.4rem);
+  transition: border-color 0.25s, background 0.25s, transform 0.25s;
+  overflow: hidden;
+  position: relative;
+}
+
+.bmc-block:hover {
+  border-color: rgba(0,212,180,0.4);
+  background: rgba(0,212,180,0.07);
+  transform: scale(1.015);
+  z-index: 2;
+}
+
+.bmc-block-num {
+  position: absolute;
+  top: clamp(0.4rem, 0.8vw, 0.7rem);
+  right: clamp(0.4rem, 0.8vw, 0.7rem);
+  font-family: var(--font-mono);
+  font-size: clamp(0.65rem, 1.1vw, 0.9rem);
+  font-weight: 700;
+  color: var(--white-30);
+  line-height: 1;
+}
+
+.bmc-block-icon {
+  font-size: clamp(1.2rem, 2.2vw, 1.9rem);
+  line-height: 1;
+}
+
+.bmc-block-title {
+  font-size: clamp(0.7rem, 1.3vw, 1.05rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.bmc-block-hint {
+  font-size: clamp(0.58rem, 1vw, 0.8rem);
+  color: var(--white-30);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/* Grid placements */
+.bmc-socios      { grid-column: 1 / 3;  grid-row: 1 / 3; }
+.bmc-actividades { grid-column: 3 / 5;  grid-row: 1; }
+.bmc-valor       { grid-column: 5 / 7;  grid-row: 1 / 3; border-color: rgba(0,212,180,0.35); background: rgba(0,212,180,0.07); }
+.bmc-relacion    { grid-column: 7 / 9;  grid-row: 1; }
+.bmc-segmentos   { grid-column: 9 / 11; grid-row: 1 / 3; border-color: rgba(61,139,255,0.3); background: rgba(61,139,255,0.05); }
+.bmc-recursos    { grid-column: 3 / 5;  grid-row: 2; }
+.bmc-canales     { grid-column: 7 / 9;  grid-row: 2; }
+.bmc-costos      { grid-column: 1 / 6;  grid-row: 3; border-color: rgba(107,95,255,0.25); }
+.bmc-ingresos    { grid-column: 6 / 11; grid-row: 3; border-color: rgba(0,212,180,0.2); }
+
+/* =====================================================
+   SLIDE 5 — PROPUESTA DE VALOR
+   ===================================================== */
+.slide--valor {
+  background: var(--dark-2);
+}
+
+.valor-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 50%, rgba(0,212,180,0.1) 0%, transparent 55%);
+}
+
+.valor-card {
+  background: rgba(0,212,180,0.07);
+  border: 1px solid rgba(0,212,180,0.25);
+  border-radius: 20px;
+  padding: clamp(1.2rem, 2.5vw, 2.5rem);
+  max-width: 650px;
+}
+
+.valor-question {
+  font-size: var(--size-body);
+  font-weight: 600;
+  color: var(--white-60);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  line-height: 1.4;
+}
+
+.valor-question::before {
+  content: '→';
+  color: var(--teal);
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   SLIDE 6 — LOS CLIENTES
+   ===================================================== */
+.slide--clientes {
+  background: var(--dark);
+}
+
+.client-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 30%, rgba(61,139,255,0.09) 0%, transparent 50%);
+}
+
+.three-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  max-width: 950px;
+}
+
+.col-card {
+  background: var(--white-10);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: clamp(1.2rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.col-card:hover {
+  border-color: rgba(61,139,255,0.35);
+  transform: translateY(-4px);
+}
+
+.col-card-icon { font-size: clamp(1.5rem, 3vw, 2.2rem); }
+
+.col-card-title {
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.col-card-body {
+  font-size: var(--size-small);
+  color: var(--white-60);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.col-card-question {
+  font-family: var(--font-mono);
+  font-size: var(--size-mono);
+  color: var(--teal);
+  letter-spacing: 0.05em;
+  margin-top: auto;
+  padding-top: var(--gap-sm);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* =====================================================
+   SLIDE 7 — INFRAESTRUCTURA
+   ===================================================== */
+.slide--infra {
+  background: var(--dark-2);
+}
+
+.infra-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 15% 60%, rgba(107,95,255,0.1) 0%, transparent 50%);
+}
+
+/* =====================================================
+   SLIDE 8 — FINANZAS
+   ===================================================== */
+.slide--finanzas {
+  background: var(--dark);
+}
+
+.finanzas-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(107,95,255,0.09) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 50%, rgba(0,212,180,0.09) 0%, transparent 45%);
+}
+
+.finanzas-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  max-width: 900px;
+  width: 100%;
+}
+
+.finanzas-half {
+  background: var(--white-10);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.finanzas-half.costos { border-color: rgba(107,95,255,0.25); background: rgba(107,95,255,0.05); }
+.finanzas-half.ingresos { border-color: rgba(0,212,180,0.25); background: rgba(0,212,180,0.05); }
+
+.fh-icon { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+
+.fh-title {
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.fh-sub {
+  font-size: var(--size-small);
+  color: var(--white-60);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.fh-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: var(--gap-sm);
+}
+
+.fh-items li {
+  font-size: var(--size-small);
+  font-weight: 600;
+  color: var(--white-80);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fh-items li::before {
+  content: '·';
+  font-size: 1.4em;
+  color: var(--teal);
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   SLIDE 9 — CIERRE
+   ===================================================== */
+.slide--cierre {
+  background: var(--grad-cover);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cierre-word {
+  font-size: clamp(3.5rem, 13vw, 10rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 8px 60px rgba(0,0,0,0.2);
+}
+
+/* =====================================================
+   EDIT MODE
+   ===================================================== */
+.edit-hotzone {
+  position: fixed;
+  top: 0; left: 0;
+  width: 80px; height: 80px;
+  z-index: 10000;
+  cursor: pointer;
+}
+
+.edit-toggle {
+  position: fixed;
+  top: 1.2rem;
+  left: 1.2rem;
+  z-index: 10001;
+  background: rgba(0,212,180,0.12);
+  border: 1px solid rgba(0,212,180,0.3);
+  border-radius: 10px;
+  padding: 0.45em 0.85em;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, background 0.2s;
+}
+
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { background: var(--teal); color: var(--dark); font-weight: 700; }
+
+[contenteditable="true"] {
+  outline: 2px dashed rgba(0,212,180,0.4);
+  outline-offset: 4px;
+  border-radius: 4px;
+  cursor: text;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-height: 700px) {
+  :root {
+    --pad: clamp(1rem, 3vw, 3rem);
+    --gap: clamp(0.6rem, 1.5vw, 1.2rem);
+    --size-xl: clamp(2rem, 7vw, 4.5rem);
+  }
+}
+
+@media (max-height: 600px) {
+  :root {
+    --pad: clamp(0.8rem, 2.5vw, 2rem);
+    --size-xl: clamp(1.6rem, 6vw, 3.5rem);
+    --size-hero: clamp(1.3rem, 4vw, 2.5rem);
+  }
+  .nav-dots, .keyboard-hint { display: none; }
+}
+
+@media (max-width: 700px) {
+  .three-cols { grid-template-columns: 1fr; }
+  .finanzas-split { grid-template-columns: 1fr; }
+  .cursor, .cursor-ring { display: none; }
+  body { cursor: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Progress bar -->
+<div class="progress" id="progressBar"></div>
+
+<!-- Navigation dots -->
+<nav class="nav-dots" id="navDots" aria-label="Navegación de slides"></nav>
+
+<!-- Keyboard hint -->
+<div class="keyboard-hint" id="kbHint">
+  <span class="key">←</span><span class="key">→</span> navegar &nbsp; <span class="key">Space</span> avanzar &nbsp; <span class="key">E</span> editar
+</div>
+
+<!-- Edit mode -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Modo edición (E)">✏ EDITAR</button>
+
+
+<!-- ===================================================
+     SLIDE 1 — ICE BREAKER / PORTADA
+     =================================================== -->
+<section class="slide slide--portada" id="slide-1" aria-label="Ice Breaker">
+  <div class="portada-bg"></div>
+  <div class="portada-noise"></div>
+  <div class="portada-year">2026</div>
+
+  <div class="portada-logo">
+    <img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="portada-logo-img">
+    <div class="logo-sub">Formación de Emprendedores</div>
+  </div>
+
+  <div class="reveal" style="position:relative;z-index:2;text-align:center;">
+    <div class="portada-hola" contenteditable="false">¡Hola! 👋</div>
+    <p class="portada-sub reveal" contenteditable="false">Pitcheá tu idea en 3 minutos</p>
+    <div class="portada-cta reveal">
+      <button class="btn btn-primary" onclick="document.getElementById('slide-2').scrollIntoView({behavior:'smooth'})">
+        🏁 Comencemos
+      </button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 2 — TIMER ICE BREAKER
+     =================================================== -->
+<section class="slide slide--timer" id="slide-2" aria-label="Timer Pitch">
+  <div class="timer-bg"></div>
+
+  <p class="timer-instruction reveal" contenteditable="false">
+    <span style="color:var(--teal);">[ </span>Pitcheá tu idea<span style="color:var(--teal);"> ]</span>
+  </p>
+
+  <div class="timer-options reveal">
+    <button class="btn-time" data-min="1">1 min</button>
+    <button class="btn-time active" data-min="3">3 min</button>
+    <button class="btn-time" data-min="5">5 min</button>
+  </div>
+
+  <div class="timer-display reveal" id="main-timer">3:00</div>
+
+  <div class="timer-actions reveal">
+    <button class="btn btn-primary" id="btn-start">▶ Iniciar</button>
+    <button class="btn btn-secondary" id="btn-reset">↺ Reiniciar</button>
+  </div>
+
+  <div class="slide-logo"><img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="slide-logo-img"></div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 3 — ¿QUÉ ES EL BMC?
+     =================================================== -->
+<section class="slide slide--bmc-intro" id="slide-3" aria-label="Business Model Canvas Intro">
+  <div class="bmc-intro-bg"></div>
+
+  <div class="section-label reveal">Herramienta clave</div>
+
+  <h2 class="reveal" style="font-size:var(--size-hero);font-weight:900;letter-spacing:-0.02em;max-width:18ch;line-height:1.05;margin-bottom:var(--gap-sm);">
+    Business Model<br>
+    <span style="color:var(--teal);">Canvas</span> 🗺️
+  </h2>
+
+  <div class="divider reveal"></div>
+
+  <p class="reveal" style="font-size:var(--size-body);color:var(--white-60);max-width:52ch;line-height:1.65;font-weight:500;margin-bottom:var(--gap);">
+    Creado por <strong style="color:var(--white-80);">Alexander Osterwalder</strong>, el Business Model Canvas es una herramienta visual que permite describir, diseñar y desafiar un modelo de negocio en una sola página.
+  </p>
+
+  <ul class="checklist reveal">
+    <li contenteditable="false">Visual y colaborativo — todo en una hoja</li>
+    <li contenteditable="false">9 bloques que cubren toda la lógica de un negocio</li>
+    <li contenteditable="false">Pensado para iterar rápido y pivotar cuando sea necesario</li>
+  </ul>
+
+  <div class="slide-logo"><img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="slide-logo-img"></div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 4 — LOS 9 BLOQUES
+     =================================================== -->
+<section class="slide slide--bmc-grid" id="slide-4" aria-label="Los 9 bloques del BMC">
+  <div class="bmc-grid-wrap reveal">
+    <p class="bmc-grid-label">Los 9 bloques del Business Model Canvas</p>
+
+    <div class="bmc-canvas">
+
+      <!-- Socios Clave — orden 8 -->
+      <div class="bmc-block bmc-socios">
+        <span class="bmc-block-num">8</span>
+        <span class="bmc-block-icon">🤝</span>
+        <div class="bmc-block-title">Socios Clave</div>
+        <div class="bmc-block-hint">¿Quiénes son tus aliados estratégicos?</div>
+      </div>
+
+      <!-- Actividades Clave — orden 7 -->
+      <div class="bmc-block bmc-actividades">
+        <span class="bmc-block-num">7</span>
+        <span class="bmc-block-icon">⚙️</span>
+        <div class="bmc-block-title">Actividades Clave</div>
+        <div class="bmc-block-hint">¿Qué hacés para entregar valor?</div>
+      </div>
+
+      <!-- Propuesta de Valor — orden 2 -->
+      <div class="bmc-block bmc-valor">
+        <span class="bmc-block-num" style="color:rgba(0,212,180,0.55);">2</span>
+        <span class="bmc-block-icon">💡</span>
+        <div class="bmc-block-title" style="color:var(--teal);">Propuesta de Valor</div>
+        <div class="bmc-block-hint" style="color:rgba(0,212,180,0.65);">¿Qué problema resolvés? ¿Qué ofrecés?</div>
+      </div>
+
+      <!-- Relación con Clientes — orden 4 -->
+      <div class="bmc-block bmc-relacion">
+        <span class="bmc-block-num">4</span>
+        <span class="bmc-block-icon">💬</span>
+        <div class="bmc-block-title">Relación con Clientes</div>
+        <div class="bmc-block-hint">¿Cómo los fidelizás?</div>
+      </div>
+
+      <!-- Segmentos de Clientes — orden 1 -->
+      <div class="bmc-block bmc-segmentos">
+        <span class="bmc-block-num" style="color:rgba(61,139,255,0.6);">1</span>
+        <span class="bmc-block-icon">👥</span>
+        <div class="bmc-block-title" style="color:rgba(61,139,255,0.9);">Segmentos de Clientes</div>
+        <div class="bmc-block-hint">¿Para quién creás valor?</div>
+      </div>
+
+      <!-- Recursos Clave — orden 6 -->
+      <div class="bmc-block bmc-recursos">
+        <span class="bmc-block-num">6</span>
+        <span class="bmc-block-icon">🏗️</span>
+        <div class="bmc-block-title">Recursos Clave</div>
+        <div class="bmc-block-hint">¿Qué activos necesitás?</div>
+      </div>
+
+      <!-- Canales — orden 3 -->
+      <div class="bmc-block bmc-canales">
+        <span class="bmc-block-num">3</span>
+        <span class="bmc-block-icon">📣</span>
+        <div class="bmc-block-title">Canales</div>
+        <div class="bmc-block-hint">¿Cómo llegás a ellos?</div>
+      </div>
+
+      <!-- Estructura de Costos — orden 9 -->
+      <div class="bmc-block bmc-costos">
+        <span class="bmc-block-num">9</span>
+        <span class="bmc-block-icon">💸</span>
+        <div class="bmc-block-title">Estructura de Costos</div>
+        <div class="bmc-block-hint">¿Cuáles son tus principales costos?</div>
+      </div>
+
+      <!-- Fuentes de Ingresos — orden 5 -->
+      <div class="bmc-block bmc-ingresos">
+        <span class="bmc-block-num">5</span>
+        <span class="bmc-block-icon">💰</span>
+        <div class="bmc-block-title">Fuentes de Ingresos</div>
+        <div class="bmc-block-hint">¿Por qué pagan tus clientes?</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 5 — PROPUESTA DE VALOR
+     =================================================== -->
+<section class="slide slide--valor" id="slide-5" aria-label="Propuesta de Valor">
+  <div class="valor-bg"></div>
+
+  <div style="display:flex;align-items:flex-start;gap:1.5rem;margin-bottom:var(--gap);" class="reveal">
+    <div>
+      <div class="section-label" style="margin-bottom:0.5rem;">El corazón del canvas</div>
+      <h2 style="font-size:var(--size-hero);font-weight:900;letter-spacing:-0.02em;max-width:16ch;line-height:1.05;">
+        💡 Propuesta<br>de <span style="color:var(--teal);">Valor</span>
+      </h2>
+    </div>
+  </div>
+
+  <div class="divider reveal"></div>
+
+  <p class="reveal" style="font-size:var(--size-body);color:var(--white-60);max-width:50ch;line-height:1.65;font-weight:500;margin-bottom:var(--gap);">
+    Es la razón por la que un cliente te elige a vos y no a la competencia. Tiene que resolver un dolor real o generar una ganancia concreta.
+  </p>
+
+  <div class="valor-card reveal">
+    <div style="display:flex;flex-direction:column;gap:var(--gap-sm);">
+      <div class="valor-question" contenteditable="false">¿Qué problema resolvés?</div>
+      <div class="valor-question" contenteditable="false">¿Qué trabajo le hacés más fácil al cliente?</div>
+      <div class="valor-question" contenteditable="false">¿Qué ganancia le generás?</div>
+      <div class="valor-question" contenteditable="false">¿Por qué sos diferente?</div>
+    </div>
+  </div>
+
+  <div class="slide-logo"><img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="slide-logo-img"></div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 6 — LOS CLIENTES
+     =================================================== -->
+<section class="slide slide--clientes" id="slide-6" aria-label="Clientes">
+  <div class="client-bg"></div>
+
+  <div class="section-label reveal">Lado derecho del canvas</div>
+
+  <h2 class="reveal" style="font-size:var(--size-hero);font-weight:900;letter-spacing:-0.02em;margin-bottom:var(--gap);">
+    Los <span style="color:#3D8BFF;">Clientes</span> 👥
+  </h2>
+
+  <div class="three-cols reveal">
+
+    <div class="col-card">
+      <div class="col-card-icon">👥</div>
+      <div class="col-card-title">Segmentos</div>
+      <div class="col-card-body">¿Para quién creás valor? Definí tu cliente ideal, no intentes llegar a todos al mismo tiempo.</div>
+      <div class="col-card-question">¿Quién es tu cliente más importante?</div>
+    </div>
+
+    <div class="col-card">
+      <div class="col-card-icon">📣</div>
+      <div class="col-card-title">Canales</div>
+      <div class="col-card-body">¿Cómo llegás a tus segmentos? Pueden ser físicos o digitales, propios o de terceros.</div>
+      <div class="col-card-question">¿Cómo te encontrás con tu cliente?</div>
+    </div>
+
+    <div class="col-card">
+      <div class="col-card-icon">💬</div>
+      <div class="col-card-title">Relación</div>
+      <div class="col-card-body">¿Qué tipo de vínculo establecés? Puede ser personal, automatizada, comunidad, autoservicio.</div>
+      <div class="col-card-question">¿Cómo los retenés y fidelizás?</div>
+    </div>
+
+  </div>
+
+  <div class="slide-logo"><img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="slide-logo-img"></div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 7 — LA INFRAESTRUCTURA
+     =================================================== -->
+<section class="slide slide--infra" id="slide-7" aria-label="Infraestructura">
+  <div class="infra-bg"></div>
+
+  <div class="section-label reveal">Lado izquierdo del canvas</div>
+
+  <h2 class="reveal" style="font-size:var(--size-hero);font-weight:900;letter-spacing:-0.02em;margin-bottom:var(--gap);">
+    La <span style="color:var(--purple);">Infraestructura</span> 🏗️
+  </h2>
+
+  <div class="three-cols reveal">
+
+    <div class="col-card" style="border-color:rgba(107,95,255,0.2);background:rgba(107,95,255,0.04);">
+      <div class="col-card-icon">🤝</div>
+      <div class="col-card-title">Socios Clave</div>
+      <div class="col-card-body">Red de proveedores y aliados que hacen funcionar tu modelo. ¿Quién te ayuda a operar y escalar?</div>
+      <div class="col-card-question" style="color:var(--purple);">¿A quién necesitás para funcionar?</div>
+    </div>
+
+    <div class="col-card" style="border-color:rgba(107,95,255,0.2);background:rgba(107,95,255,0.04);">
+      <div class="col-card-icon">⚙️</div>
+      <div class="col-card-title">Actividades Clave</div>
+      <div class="col-card-body">Las cosas más importantes que hacés para que tu propuesta de valor funcione. Producción, plataforma, resolución de problemas.</div>
+      <div class="col-card-question" style="color:var(--purple);">¿Qué no podés dejar de hacer?</div>
+    </div>
+
+    <div class="col-card" style="border-color:rgba(107,95,255,0.2);background:rgba(107,95,255,0.04);">
+      <div class="col-card-icon">🏗️</div>
+      <div class="col-card-title">Recursos Clave</div>
+      <div class="col-card-body">Los activos necesarios: físicos, intelectuales, humanos o financieros. ¿Con qué contás para operar?</div>
+      <div class="col-card-question" style="color:var(--purple);">¿Qué recursos son irremplazables?</div>
+    </div>
+
+  </div>
+
+  <div class="slide-logo"><img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="slide-logo-img"></div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 8 — LAS FINANZAS
+     =================================================== -->
+<section class="slide slide--finanzas" id="slide-8" aria-label="Finanzas">
+  <div class="finanzas-bg"></div>
+
+  <div class="section-label reveal">La base del canvas</div>
+
+  <h2 class="reveal" style="font-size:var(--size-hero);font-weight:900;letter-spacing:-0.02em;margin-bottom:var(--gap);">
+    Las <span style="background:var(--grad-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Finanzas</span> 💰
+  </h2>
+
+  <div class="finanzas-split reveal">
+
+    <div class="finanzas-half costos">
+      <div class="fh-icon">💸</div>
+      <div class="fh-title">Estructura de Costos</div>
+      <div class="fh-sub">¿Cuáles son los costos más importantes de operar tu modelo?</div>
+      <ul class="fh-items">
+        <li contenteditable="false">Costos fijos vs. variables</li>
+        <li contenteditable="false">¿Cuál es el más costoso?</li>
+        <li contenteditable="false">¿Cuáles escalan con el volumen?</li>
+      </ul>
+    </div>
+
+    <div class="finanzas-half ingresos">
+      <div class="fh-icon">💰</div>
+      <div class="fh-title">Fuentes de Ingresos</div>
+      <div class="fh-sub">¿Por qué valor están dispuestos a pagar tus clientes?</div>
+      <ul class="fh-items">
+        <li contenteditable="false">Venta, suscripción, licencia, comisión</li>
+        <li contenteditable="false">¿Cuánto pagan actualmente por algo similar?</li>
+        <li contenteditable="false">¿Qué prefieren: pago único o recurrente?</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="slide-logo"><img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="slide-logo-img"></div>
+</section>
+
+
+<!-- ===================================================
+     SLIDE 9 — CIERRE: A CONSTRUIR EL TUYO
+     =================================================== -->
+<section class="slide slide--cierre" id="slide-9" aria-label="Cierre">
+  <div class="portada-bg"></div>
+  <div class="portada-noise"></div>
+  <div class="portada-year">2026</div>
+
+  <div class="portada-logo reveal-scale">
+    <img src="logo-utn-emprende-blanco.png" alt="UTN Emprende" class="portada-logo-img">
+    <div class="logo-sub">Formación de Emprendedores</div>
+  </div>
+
+  <div style="position:relative;z-index:2;text-align:center;">
+    <div class="cierre-word reveal" contenteditable="false">¡A construir<br>el tuyo! 🚀</div>
+    <p class="reveal" style="font-size:var(--size-body);color:rgba(255,255,255,0.72);margin-top:var(--gap);letter-spacing:0.05em;font-weight:500;" contenteditable="false">
+      Tomá el lienzo, ponele nombre a tu idea y completá los 9 bloques.
+    </p>
+  </div>
+</section>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+<script>
+/* =====================================================
+   CUSTOM CURSOR
+   ===================================================== */
+const cursor     = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0;
+let ringX  = 0, ringY  = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top  = mouseY + 'px';
+});
+
+(function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top  = ringY + 'px';
+  requestAnimationFrame(animateRing);
+})();
+
+
+/* =====================================================
+   SLIDE PRESENTATION
+   ===================================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides       = Array.from(document.querySelectorAll('.slide'));
+    this.totalSlides  = this.slides.length;
+    this.currentIndex = 0;
+
+    this.progressBar = document.getElementById('progressBar');
+    this.navDotsEl   = document.getElementById('navDots');
+    this.kbHint      = document.getElementById('kbHint');
+
+    this.buildNavDots();
+    this.setupObserver();
+    this.setupKeyboard();
+    this.setupWheel();
+    this.setupTouch();
+    this.updateSlide(0);
+
+    let hinted = false;
+    const hideHint = () => {
+      if (!hinted) {
+        hinted = true;
+        this.kbHint.style.opacity = '0';
+        setTimeout(() => this.kbHint.style.display = 'none', 500);
+      }
+    };
+    document.addEventListener('keydown', hideHint, { once: true });
+    document.addEventListener('wheel', hideHint, { once: true });
+  }
+
+  buildNavDots() {
+    this.slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot';
+      dot.setAttribute('aria-label', `Ir al slide ${i + 1}`);
+      dot.addEventListener('click', () => this.goTo(i));
+      this.navDotsEl.appendChild(dot);
+    });
+  }
+
+  setupObserver() {
+    const opts = { root: null, threshold: 0.55 };
+    const obs  = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          const idx = this.slides.indexOf(e.target);
+          this.currentIndex = idx;
+          this.updateUI(idx);
+        }
+      });
+    }, opts);
+    this.slides.forEach(s => obs.observe(s));
+  }
+
+  updateUI(idx) {
+    const pct = (idx / (this.totalSlides - 1)) * 100;
+    this.progressBar.style.width = pct + '%';
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === idx);
+    });
+  }
+
+  updateSlide(idx) {
+    this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  goTo(idx) {
+    idx = Math.max(0, Math.min(idx, this.totalSlides - 1));
+    this.currentIndex = idx;
+    this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  next() { this.goTo(this.currentIndex + 1); }
+  prev() { this.goTo(this.currentIndex - 1); }
+
+  setupKeyboard() {
+    document.addEventListener('keydown', e => {
+      if (e.target.getAttribute('contenteditable') === 'true') return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault(); this.next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault(); this.prev();
+      }
+    });
+  }
+
+  setupWheel() {
+    let lastWheel = 0;
+    document.addEventListener('wheel', e => {
+      const now = Date.now();
+      if (now - lastWheel < 700) return;
+      lastWheel = now;
+      if (e.deltaY > 30) this.next();
+      else if (e.deltaY < -30) this.prev();
+    }, { passive: true });
+  }
+
+  setupTouch() {
+    let startY = 0;
+    document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const dy = startY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 50) { if (dy > 0) this.next(); else this.prev(); }
+    }, { passive: true });
+  }
+}
+
+
+/* =====================================================
+   TIMER WITH BUTTONS
+   ===================================================== */
+class ButtonTimer {
+  constructor() {
+    this.display    = document.getElementById('main-timer');
+    this.btnStart   = document.getElementById('btn-start');
+    this.btnReset   = document.getElementById('btn-reset');
+    this.timeOpts   = document.querySelectorAll('.btn-time');
+
+    this.selectedMin = 3;
+    this.left        = this.selectedMin * 60;
+    this.running     = false;
+    this.done        = false;
+    this.interval    = null;
+
+    this.btnStart.addEventListener('click', () => this.toggleStart());
+    this.btnReset.addEventListener('click', () => this.reset());
+
+    this.timeOpts.forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.timeOpts.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.selectedMin = parseInt(btn.dataset.min);
+        this.reset();
+      });
+    });
+
+    this.render();
+  }
+
+  toggleStart() {
+    if (this.done) { this.reset(); return; }
+    if (this.running) this.pause(); else this.start();
+  }
+
+  start() {
+    this.running = true;
+    this.done    = false;
+    this.display.classList.add('running');
+    this.display.classList.remove('done');
+    this.btnStart.textContent = '⏸ Pausar';
+    this.interval = setInterval(() => this.tick(), 1000);
+  }
+
+  pause() {
+    this.running = false;
+    this.display.classList.remove('running');
+    clearInterval(this.interval);
+    this.btnStart.textContent = '▶ Continuar';
+  }
+
+  tick() {
+    this.left--;
+    this.render();
+    if (this.left <= 0) this.finish();
+  }
+
+  finish() {
+    clearInterval(this.interval);
+    this.running = false;
+    this.done    = true;
+    this.display.classList.remove('running');
+    this.display.classList.add('done');
+    this.display.textContent = '¡Tiempo!';
+    this.btnStart.textContent = '▶ Iniciar';
+  }
+
+  reset() {
+    clearInterval(this.interval);
+    this.running = false;
+    this.done    = false;
+    this.left    = this.selectedMin * 60;
+    this.display.classList.remove('running', 'done');
+    this.btnStart.textContent = '▶ Iniciar';
+    this.render();
+  }
+
+  render() {
+    if (!this.done) {
+      const m = Math.floor(this.left / 60).toString();
+      const s = (this.left % 60).toString().padStart(2, '0');
+      this.display.textContent = `${m}:${s}`;
+    }
+  }
+}
+
+
+/* =====================================================
+   EDIT MODE
+   ===================================================== */
+class InlineEditor {
+  constructor() {
+    this.active    = false;
+    this.toggle    = document.getElementById('editToggle');
+    this.hotzone   = document.getElementById('editHotzone');
+    this.hideTimer = null;
+    this.editables = document.querySelectorAll('[contenteditable]');
+
+    this.hotzone.addEventListener('mouseenter', () => {
+      clearTimeout(this.hideTimer);
+      this.toggle.classList.add('show');
+    });
+    this.hotzone.addEventListener('mouseleave', () => {
+      this.hideTimer = setTimeout(() => {
+        if (!this.active) this.toggle.classList.remove('show');
+      }, 400);
+    });
+    this.toggle.addEventListener('mouseenter', () => clearTimeout(this.hideTimer));
+    this.toggle.addEventListener('mouseleave', () => {
+      this.hideTimer = setTimeout(() => {
+        if (!this.active) this.toggle.classList.remove('show');
+      }, 400);
+    });
+
+    this.hotzone.addEventListener('click', () => this.toggleEditMode());
+    this.toggle.addEventListener('click',  () => this.toggleEditMode());
+
+    document.addEventListener('keydown', e => {
+      if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable')) {
+        this.toggleEditMode();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        if (this.active) this.save();
+      }
+    });
+  }
+
+  toggleEditMode() {
+    this.active = !this.active;
+    this.editables.forEach(el => {
+      el.setAttribute('contenteditable', this.active ? 'true' : 'false');
+    });
+    this.toggle.textContent = this.active ? '💾 GUARDAR' : '✏ EDITAR';
+    this.toggle.classList.toggle('active', this.active);
+    this.toggle.classList.add('show');
+    if (!this.active) this.save();
+  }
+
+  save() {
+    this.editables.forEach((el, i) => {
+      localStorage.setItem(`clase2-edit-${i}`, el.innerHTML);
+    });
+    this.showSavedToast();
+  }
+
+  showSavedToast() {
+    const toast = document.createElement('div');
+    toast.textContent = '✓ Guardado';
+    Object.assign(toast.style, {
+      position: 'fixed', bottom: '1.5rem', right: '1.5rem',
+      background: 'var(--teal)', color: 'var(--dark)',
+      fontFamily: 'var(--font-mono)', fontSize: '0.75rem',
+      fontWeight: '700', letterSpacing: '0.1em',
+      padding: '0.6em 1.2em', borderRadius: '8px',
+      zIndex: '9999', transition: 'opacity 0.5s',
+    });
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; }, 1500);
+    setTimeout(() => toast.remove(), 2000);
+  }
+
+  loadSaved() {
+    this.editables.forEach((el, i) => {
+      const saved = localStorage.getItem(`clase2-edit-${i}`);
+      if (saved) el.innerHTML = saved;
+    });
+  }
+}
+
+// Init
+const timer        = new ButtonTimer();
+const editor       = new InlineEditor();
+editor.loadSaved();
+const presentation = new SlidePresentation();
+</script>
+
+</body>
+</html>
